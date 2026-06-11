@@ -65,9 +65,7 @@ jobs:
           service: know-way-backend
           region: ${{ secrets.GCP_REGION }}
           image: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-backend:${{ github.sha }}
-          # Grant public accessibility and run as the custom IAM service account with Secret/Vertex access
           flags: --allow-unauthenticated --service-account=know-way-runtime-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
-          # Inject secrets and configuration
           env_vars: |
             GOOGLE_GENAI_USE_VERTEXAI=1
             GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}
@@ -77,6 +75,7 @@ jobs:
             EXPOSE_OPENAPI=false
             RATE_LIMIT_ENABLED=true
             INSIGHTS_ENABLED=true
+            CORS_ORIGINS=https://know-way.site,https://know-way-frontend-pg6lmkrp5q-uc.a.run.app,http://localhost:3000
           # Safely pull MONGODB_URI and CLERK_JWT_ISSUER from secure secrets manager
           secrets: |
             MONGODB_URI=MONGODB_URI:latest
