@@ -49,24 +49,24 @@ jobs:
       - name: Build and Push Backend Image
         run: |
           docker build \
-            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-backend:${{ github.sha }} \
-            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-backend:latest \
+            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-backend:${{ github.sha }} \
+            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-backend:latest \
             ./backend
 
       - name: Push Backend Image
         run: |
-          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-backend:${{ github.sha }}
-          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-backend:latest
+          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-backend:${{ github.sha }}
+          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-backend:latest
 
       - name: Deploy Backend to Cloud Run
         id: deploy-backend
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: yckwydk-backend
+          service: know-way-backend
           region: ${{ secrets.GCP_REGION }}
-          image: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-backend:${{ github.sha }}
-          # Grant public accessibility (authenticating users via Clerk API)
-          flags: --allow-unauthenticated
+          image: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-backend:${{ github.sha }}
+          # Grant public accessibility and run as the custom IAM service account with Secret/Vertex access
+          flags: --allow-unauthenticated --service-account=know-way-runtime-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
           # Inject secrets and configuration
           env_vars: |
             GOOGLE_GENAI_USE_VERTEXAI=1
@@ -92,23 +92,24 @@ jobs:
             --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
             --build-arg NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in \
             --build-arg NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up \
-            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-frontend:${{ github.sha }} \
-            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-frontend:latest \
+            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-frontend:${{ github.sha }} \
+            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-frontend:latest \
             ./frontend
 
       - name: Push Frontend Image
         run: |
-          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-frontend:${{ github.sha }}
-          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-frontend:latest
+          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-frontend:${{ github.sha }}
+          docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-frontend:latest
 
       - name: Deploy Frontend to Cloud Run
         id: deploy-frontend
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: yckwydk-frontend
+          service: know-way-frontend
           region: ${{ secrets.GCP_REGION }}
-          image: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/yckwydk-frontend:${{ github.sha }}
-          flags: --allow-unauthenticated
+          image: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GAR_REPO }}/know-way-frontend:${{ github.sha }}
+          # Run as the custom IAM service account with Secret access
+          flags: --allow-unauthenticated --service-account=know-way-runtime-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
           # Next.js Server Side Secrets (like Clerk keys)
           secrets: |
             CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest
