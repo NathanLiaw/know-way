@@ -87,7 +87,7 @@ jobs:
       - name: Build and Push Frontend Image
         run: |
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL=${{ steps.deploy-backend.outputs.url }} \
+            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
             --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
             --build-arg NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in \
             --build-arg NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up \
