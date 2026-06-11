@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     mongodb_uri: str
     mongodb_db_name: str = DEFAULT_DB_NAME
     demo_user_id: str = "user_01"
-    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    cors_origins: str = "https://know-way.site,http://localhost:3000,http://127.0.0.1:3000"
     port: int = 8000
     rate_limit_enabled: bool = True
     rate_limit_default: str = "120/minute"
