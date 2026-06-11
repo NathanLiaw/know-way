@@ -4,7 +4,7 @@ FastAPI backend server for the **Know-Way** personalized learning platform. It m
 
 ---
 
-## 🛠️ Setup & Local installation
+## 🛠️ Setup & Local installation 
 
 ### 1. Prerequisite Installations
 Ensure you have **Python 3.11+** installed on your system.
