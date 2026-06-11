@@ -1,0 +1,4 @@
+"""Re-export auth dependencies for routers."""
+from app.auth.clerk import get_current_user_id, get_token_claims
+
+__all__ = ["get_current_user_id", "get_token_claims"]
