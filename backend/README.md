@@ -22,7 +22,20 @@ cp .env.example .env         # Windows: copy .env.example .env
 
 Edit the generated `.env` file to customize your configuration (MongoDB connection strings, AI models, and secrets).
 
-### 3. Production Guidelines
+### 3. Google Cloud & Vertex AI (ADK) Authentication
+The Agent Developer Kit (ADK) connects to Gemini models via Vertex AI. You must configure local credentials:
+*   Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) on your machine.
+*   Log in and set up local Application Default Credentials (ADC) by running:
+    ```bash
+    gcloud auth application-default login
+    ```
+*   Edit `.env` to specify your Google Cloud project details:
+    ```env
+    GOOGLE_CLOUD_PROJECT=your-google-cloud-project-id
+    GOOGLE_CLOUD_LOCATION=us-central1
+    ```
+
+### 4. Production Guidelines
 When deploying to staging or production, ensure:
 *   `EXPOSE_OPENAPI=false` (hides Swagger UI)
 *   `RATE_LIMIT_ENABLED=true` (prevents API abuse)
