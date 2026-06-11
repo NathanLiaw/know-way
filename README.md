@@ -8,6 +8,69 @@ This project is built using **Gemini (2.5 Flash & 2.5 Pro)**, **Google Cloud Age
 
 ---
 
+## 🏁 Quick Setup & Run Guide (For Judges)
+
+To run the full project locally, you will need to start both the **FastAPI Backend** and the **Next.js Frontend**.
+
+### ⚙️ 1. Backend Setup (FastAPI)
+
+1. Navigate to the backend directory and set up a virtual environment:
+   ```bash
+   cd backend
+   python -m venv .venv
+   # Activate virtualenv:
+   # Windows:
+   .venv\Scripts\activate
+   # macOS/Linux:
+   source .venv/bin/activate
+   ```
+2. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Copy the environment configuration:
+   ```bash
+   copy .env.example .env     # macOS/Linux: cp .env.example .env
+   ```
+4. Configure your `.env` variables with your `MONGODB_URI`.
+5. **Google Cloud & Vertex AI (ADK) Authentication**:
+   The Agent Developer Kit (ADK) connects to Gemini models via Vertex AI. You must configure local credentials:
+   *   Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) on your machine.
+   *   Log in and set up local Application Default Credentials (ADC) by running:
+       ```bash
+       gcloud auth application-default login
+       ```
+   *   Edit `.env` to specify your Google Cloud project details:
+       ```env
+       GOOGLE_CLOUD_PROJECT=your-google-cloud-project-id
+       GOOGLE_CLOUD_LOCATION=us-central1
+       ```
+6. Start the FastAPI development server:
+   ```bash
+   uvicorn app.main:app --reload --port 8000
+   ```
+   * *Swagger API documentation will be available at http://127.0.0.1:8000/docs*
+
+### 💻 2. Frontend Setup (Next.js)
+
+1. Open a new terminal window, navigate to the frontend directory, and install npm packages:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. Copy the environment configuration:
+   ```bash
+   copy .env.example .env.local     # macOS/Linux: cp .env.example .env.local
+   ```
+3. Configure Clerk Authentication keys in `.env.local` (or leave defaults for local unauthenticated dev environment).
+4. Run the frontend development server:
+   ```bash
+   npm run dev
+   ```
+   * *The web interface will be available at http://localhost:3000*
+
+---
+
 ## ✨ Key Features
 
 ### 🗺️ Adaptive Knowledge Graphs (Roadmaps)
@@ -154,15 +217,6 @@ The AI agents in this project are connected directly to the **MongoDB Model Cont
 *   **Agent Engine**: Google Cloud Agent Builder (Agent Developer Kit - ADK)
 *   **Database**: MongoDB Atlas, Motor
 *   **MCP Protocol**: Official `@mongodb-js/mongodb-mcp-server`
-
----
-
-## 🏁 Setup & Getting Started
-
-To get the application up and running locally, please follow the setup instructions in the respective backend and frontend directories:
-
-*   ⚙️ **[Backend Setup & API Configuration](backend/README.md)**: Details on installing dependencies, setting up MongoDB, configuring Google Cloud Vertex AI, and launching the FastAPI server.
-*   💻 **[Frontend Setup & Client Deployment](frontend/README.md)**: Instructions on setting up Clerk authentication, configuring Next.js, and running the web client.
 
 ---
 
