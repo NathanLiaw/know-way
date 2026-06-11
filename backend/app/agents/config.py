@@ -367,17 +367,29 @@ import sys
 from mcp import StdioServerParameters
 from google.adk.tools.mcp_tool import StdioConnectionParams, McpToolset
 
+class SafeMcpToolset(McpToolset):
+    async def get_tools(self, readonly_context=None):
+        try:
+            return await super().get_tools(readonly_context)
+        except Exception as e:
+            import logging
+            logging.getLogger("app.agents.config").warning(
+                "SafeMcpToolset: Failed to connect to MCP server. Falling back to empty tool list. Error: %s", e
+            )
+            return []
+
 server_params = StdioServerParameters(
     command="npx.cmd" if sys.platform == "win32" else "npx",
-    args=["-y", "@mongodb-js/mongodb-mcp-server"],
+    args=["-y", "mongodb-mcp-server"],
     env={
         **os.environ,
         "MDB_MCP_CONNECTION_STRING": os.environ.get("MONGODB_URI", ""),
-        "MDB_MCP_READ_ONLY": "true"
+        "MDB_MCP_READ_ONLY": "true",
+        "NODE_OPTIONS": "--experimental-require-module"
     }
 )
 connection_params = StdioConnectionParams(server_params=server_params, timeout=120.0)
-mongodb_mcp_toolset = McpToolset(connection_params=connection_params)
+mongodb_mcp_toolset = SafeMcpToolset(connection_params=connection_params)
 
 _model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 _model_pro = os.environ.get("GEMINI_PRO_MODEL", "gemini-2.5-pro")
@@ -402,7 +414,7 @@ Librarian = Agent(
     model=_model,
     name="Librarian",
     instruction=LIBRARIAN_INSTRUCTIONS,
-    tools=[GoogleSearchTool(), mongodb_mcp_toolset],
+    tools=[GoogleSearchTool()],
 )
 
 TeachingAssistant = Agent(

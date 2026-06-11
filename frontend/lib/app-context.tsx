@@ -60,27 +60,30 @@ function AppProviderInner({ children }: { children: ReactNode }) {
   const [hasAutoDismissed, setHasAutoDismissed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [dismissedTaskIds, setDismissedTaskIds] = useState<string[]>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const stored = localStorage.getItem("knowway_dismissed_tasks");
-        return stored ? JSON.parse(stored) : [];
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  });
+  const [dismissedTaskIds, setDismissedTaskIds] = useState<string[]>([]);
+  const [dismissedLoaded, setDismissedLoaded] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem("knowway_dismissed_tasks");
+      if (stored) {
+        setDismissedTaskIds(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setDismissedLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (dismissedLoaded) {
       try {
         localStorage.setItem("knowway_dismissed_tasks", JSON.stringify(dismissedTaskIds));
       } catch (e) {
         console.error(e);
       }
     }
-  }, [dismissedTaskIds]);
+  }, [dismissedTaskIds, dismissedLoaded]);
 
   // Once roadmaps load, auto-dismiss any active tasks that are already in progress so they don't force-pop on load
   useEffect(() => {

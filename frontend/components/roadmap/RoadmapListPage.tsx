@@ -29,6 +29,7 @@ export default function RoadmapListPage() {
 
   const handleToggleStatus = async (e: React.MouseEvent, id: string, currentStatus: string) => {
     e.stopPropagation();
+    e.preventDefault();
     const nextStatus = currentStatus === "active" ? "paused" : "active";
     try {
       await api.updateRoadmapStatus(id, nextStatus);
@@ -40,6 +41,7 @@ export default function RoadmapListPage() {
 
   const handleDeleteRoadmap = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
+    e.preventDefault();
     if (!confirm("Are you sure you want to delete this roadmap? This action cannot be undone.")) {
       return;
     }

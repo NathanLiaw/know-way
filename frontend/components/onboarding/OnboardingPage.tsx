@@ -270,12 +270,12 @@ export default function OnboardingPage() {
 
       {/* Card */}
       <div style={{
-        width: "100%", maxWidth: 560,
+        width: "100%", maxWidth: 1000,
         background: "var(--bg-card)", border: "1px solid var(--border)",
         borderRadius: "var(--radius-xl)", padding: "36px 40px",
         animation: "fadeUp 0.3s ease",
         display: "flex", flexDirection: "column",
-        minHeight: onboardingStage === "chat" ? 480 : "auto",
+        minHeight: onboardingStage === "chat" ? 600 : "auto",
       }}>
         {/* Step 0 — Topic */}
         {step === 0 && onboardingStage === "topic" && (
@@ -348,7 +348,7 @@ export default function OnboardingPage() {
               flex: 1, overflowY: "auto", border: "1px solid var(--border)",
               borderRadius: "var(--radius-md)", background: "var(--bg-surface)",
               padding: 16, display: "flex", flexDirection: "column", gap: 12,
-              maxHeight: 280, minHeight: 220, marginBottom: 16
+              maxHeight: 460, minHeight: 360, marginBottom: 16
             }}>
               {chatMessages.map((m) => (
                 <div key={m.id} style={{ display: "flex", gap: 8, flexDirection: m.role === "user" ? "row-reverse" : "row" }}>

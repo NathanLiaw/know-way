@@ -410,6 +410,18 @@ async def enrich_single_node(node: dict, user_profile: dict) -> dict:
         proposed_resources = []
         try:
             json_text = lib_raw.strip()
+            # Handle markdown code blocks if present
+            if "```" in json_text:
+                # Find the first json code block or any code block
+                import re
+                match = re.search(r"```(?:json)?\s*(\{.*\})\s*```", json_text, re.DOTALL)
+                if match:
+                    json_text = match.group(1)
+                else:
+                    # Strip any surrounding backticks/codeblock markers manually
+                    json_text = re.sub(r"^```[a-zA-Z]*\s*", "", json_text)
+                    json_text = re.sub(r"\s*```$", "", json_text)
+
             start_idx = json_text.find('{')
             end_idx = json_text.rfind('}')
             if start_idx != -1 and end_idx != -1:
@@ -420,6 +432,8 @@ async def enrich_single_node(node: dict, user_profile: dict) -> dict:
             proposed_resources = lib_data.get("resources", [])
         except Exception as e:
             print(f"Librarian description parsing fallback: {e}")
+            # Try to see if we can parse it by regex fallback or similar if needed
+            # but standard fallback is safe anyway as it keeps default description/empty resources
 
         # Build curated resources list directly, matching Librarian proposed titles with redirect links
         resources = []
