@@ -50,7 +50,7 @@ To run the full project locally, you will need to start both the **FastAPI Backe
    uvicorn app.main:app --reload --port 8000
    ```
    * *Swagger API documentation will be available at http://127.0.0.1:8000/docs*
-
+ 
 ### 💻 2. Frontend Setup (Next.js)
 
 1. Open a new terminal window, navigate to the frontend directory, and install npm packages:
