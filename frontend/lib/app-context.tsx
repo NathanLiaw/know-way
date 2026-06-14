@@ -375,7 +375,7 @@ function AppProviderWithClerk({ children }: { children: ReactNode }) {
   }
 
   if (!isSignedIn) {
-    return null;
+    return <>{children}</>;
   }
 
   return <AppProviderInner>{children}</AppProviderInner>;

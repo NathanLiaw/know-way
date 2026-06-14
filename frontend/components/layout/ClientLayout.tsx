@@ -4,7 +4,7 @@ import AppShell from "./AppShell";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isFullScreen = pathname === "/onboarding" || pathname.startsWith("/sign-");
+  const isFullScreen = pathname === "/" || pathname === "/onboarding" || pathname.startsWith("/sign-");
 
   if (isFullScreen) {
     return <>{children}</>;
