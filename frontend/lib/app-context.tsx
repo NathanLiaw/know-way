@@ -190,7 +190,7 @@ function AppProviderInner({ children }: { children: ReactNode }) {
   const updateAssessmentScore = useCallback(async (assessmentId: string, score: number, userResponse?: string) => {
     const updated = await api.updateAssessmentScore(assessmentId, score, userResponse);
     setAssessments(prev => prev.map(a => (a.id === assessmentId ? updated : a)));
-    
+
     // Immediately re-fetch roadmaps & dashboard stats to synchronize node status and confidence
     try {
       const [roadmapList, dashStats] = await Promise.all([
@@ -354,22 +354,27 @@ function AppProviderInner({ children }: { children: ReactNode }) {
 
 function AppProviderWithClerk({ children }: { children: ReactNode }) {
   const { isLoaded, isSignedIn, getToken } = useAuth();
+  const [tokenReady, setTokenReady] = useState(false);
 
   useEffect(() => {
-    if (!isLoaded || !isSignedIn) {
+    if (!isLoaded) return;
+
+    if (!isSignedIn) {
       setAuthTokenGetter(async () => null);
-      return;
+    } else {
+      // Pass getToken directly - it is already () => Promise<string | null>
+      setAuthTokenGetter(getToken);
     }
-    setAuthTokenGetter(() => getToken());
+    setTokenReady(true);
   }, [isLoaded, isSignedIn, getToken]);
 
-  if (!isLoaded) {
+  if (!isLoaded || !tokenReady) {
     return (
       <div style={{
         minHeight: "40vh", display: "flex", alignItems: "center", justifyContent: "center",
         color: "var(--text-secondary)", fontFamily: "var(--font-body)", fontSize: 14,
       }}>
-        Loading…
+        Loading...
       </div>
     );
   }
