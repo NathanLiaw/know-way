@@ -8,7 +8,7 @@ from jwt import PyJWKClient
 from app.config import settings
 
 _bearer = HTTPBearer(auto_error=False)
-_jwks_client: PyJWKClient | None = None
+_jwks_client_instance: PyJWKClient | None = None
 
 
 @dataclass(frozen=True)
@@ -19,11 +19,11 @@ class TokenClaims:
 
 
 def _jwks_client() -> PyJWKClient:
-    global _jwks_client
-    if _jwks_client is None:
+    global _jwks_client_instance
+    if _jwks_client_instance is None:
         issuer = settings.clerk_jwt_issuer.rstrip("/")
-        _jwks_client = PyJWKClient(f"{issuer}/.well-known/jwks.json")
-    return _jwks_client
+        _jwks_client_instance = PyJWKClient(f"{issuer}/.well-known/jwks.json")
+    return _jwks_client_instance
 
 
 def _verify_token(token: str) -> TokenClaims:
