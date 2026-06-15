@@ -35,7 +35,7 @@ export default function SettingsPage() {
     ? new Date(user.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })
     : "Recently";
 
-  const currentStreak = stats?.currentStreak ?? 0;
+  const currentStreak = (stats as any)?.currentStreak ?? 0;
 
   const save = () => {
     setSaved(true);

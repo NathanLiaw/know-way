@@ -127,4 +127,5 @@ export interface DashboardStats {
   nodesCompleted: number;
   avgConfidence: number;
   streak: number;
+  currentStreak: number;
 }
